@@ -33,7 +33,6 @@ return new class extends Migration
             m.descripcion
             FROM adm_menus m
             WHERE m.padre = COALESCE(in_padre, 0)
-            AND m.id_sistema = in_sistema
             AND m.id <> 0
             AND (m.id IN (SELECT mg.id_menu FROM adm_rel_menu_grupo mg WHERE mg.id_grupo IN (SELECT ug.id_grupo FROM adm_rel_user_grupo ug WHERE ug.id_usuario = in_usuario))
             OR (SELECT u.sudo FROM adm_users u WHERE u.id = in_usuario) = 1)

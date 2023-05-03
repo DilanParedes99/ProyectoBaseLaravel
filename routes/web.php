@@ -16,23 +16,25 @@ use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
 Route::group(['middleware' => ['web', 'XSS']], function() {
-	Route::get('/', function () {
-   	 	if((Auth::check())){
-   	 		Session(['sistema' => 1]);
-   	 		return view('index');
-   	 	}else {
-   	 		return view('auth.login');
-   	 	}
-	});
-	Route::group(['middleware' => 'auth'], function() {
-		Route::get('/sistemas', function () {
-			Session(['sistema' => 1]);
-			return view('sistema.index');
-		});
-		Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+    Route::get('/', function () {
+        if((Auth::check())){
+            Session(['sistema' => 1]);
+            return view('administracion.index');
+        }else {
+            return view('auth.login');
+        }
+    });
 
-		Route::get('/inicio', function() { return view('inicio'); });
+    Route::group(['middleware' => 'auth'], function() {
+        Route::get('/sistemas', function () {
+            Session(['sistema' => 1]);
+            return view('administracion.index');
+        });
 
-		include('administracion.php');//Agregar las rutas para el módulo de administración en este archivo
-	});
+        Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+
+        Route::get('/inicio', function() { return view('inicio'); });
+
+        include('administracion.php');//Agregar las rutas para el módulo de administración en este archivo
+    });
 });

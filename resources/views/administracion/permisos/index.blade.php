@@ -47,7 +47,7 @@
 																</span>
 															</span>
 															<ul>
-																<?php $menus = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id, $sistema->id, null]); ?>
+																<?php $menus = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id, null]); ?>
 																@foreach($menus as $menu)
 																<li style="display:none">									
 																	<span>																
@@ -62,7 +62,7 @@
 																		</span>
 																	</span>
 																	<ul>
-																		<?php $hijos = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id, $sistema->id, $menu->id]); ?>
+																		<?php $hijos = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id, $menu->id]); ?>
 																		@foreach($hijos as $hijo)
 																		<li style="display: none">
 																			<span>
@@ -76,7 +76,7 @@
 																					@endif
 																				</span>
 																			</span>
-																			<?php $nietos = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id, $sistema->id,$hijo->id]); ?>
+																			<?php $nietos = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id,$hijo->id]); ?>
 																			@if($nietos)
 																				<ul>
 																				@foreach($nietos as $nieto)
@@ -93,7 +93,7 @@
 																							</span>
 																						</span>
 																						<ul>
-																							<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? AND id_sistema=?', [$nieto->nombre, $sistema->id]); ?>
+																							<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ', [$nieto->nombre]); ?>
 																							@foreach($permisos as $permiso)
 																							<li style="display:none">
 																								<span>
@@ -108,11 +108,11 @@
 																								</span>
 																							</li>
 																							@endforeach
-																							<?php $modulos = DB::select('SELECT DISTINCT modulo FROM adm_funciones WHERE padre=? AND id_sistema=? ORDER BY modulo', [$nieto->nombre, $sistema->id]); ?>
+																							<?php $modulos = DB::select('SELECT DISTINCT modulo FROM adm_funciones WHERE padre=? ORDER BY modulo', [$nieto->nombre]); ?>
 																							@foreach($modulos as $modulo)
 																							<li style="display: none"><span><i class="fa fa-lg fa-plus-circle"></i>&nbsp; {{$modulo->modulo}}</span>
 																							<ul>
-																								<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? AND id_sistema=? ORDER BY tipo', [$modulo->modulo, $sistema->id]); ?>
+																								<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$modulo->modulo]); ?>
 																								@foreach($permisos as $permiso)
 																								<li style="display:none">
 																									<span>

@@ -12,7 +12,6 @@ class Funciones extends Model
     protected $table = 'adm_funciones';
 
     protected $fillable = [
-    	'id_sistema',
     	'id_menu',
     	'modulo',
     	'funcion',

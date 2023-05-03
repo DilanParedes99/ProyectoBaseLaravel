@@ -21,26 +21,7 @@ $(document).ready(function() {
 			});
 		}
 	});
-	//Input Sistemas Función Change
-	$("input[name='sistemas']").change(function() {
-		_id_sistema = $(this).val();
-		_id_role = $("#id").val();
-		if($(this).prop("checked") == true) {
-			$.ajax({
-				type : "POST",
-				url : url + "/sasigna",
-				data : {sistema : _id_sistema, role : _id_role}
-			}).done(function(_response) {
-			});
-		} else {
-			$.ajax({
-				type : "POST",
-				url : url + "/sremueve",
-				data : {sistema : _id_sistema, role : _id_role}
-			}).done(function(_response) {
-			});
-		}
-	});
+
 	//Input Menus Función Change
 	$("input[name='menus']").change(function() {
 		_id_menu = $(this).val();
@@ -63,7 +44,6 @@ $(document).ready(function() {
 	});
 	//Input Todos los Permisos Función Change
 	$("input[name='all-permission']").change(function() {
-		_id_sistema = $(this).val();
 		_id_role = $("#id").val();
 		_type = "";
 		$("#widget-grid").html('<h1 class="error-text-2 bounceInDown animated"><i class="fa fa-gear fa-spin fa-lg"></i> Cargando <span class="particle particle--a"></span><span class="particle particle--b"></span></h1>');
@@ -71,7 +51,7 @@ $(document).ready(function() {
 		$.ajax({
 			type : "POST",
 			url : url + "/all-permission",
-			data : {sistema : _id_sistema, role : _id_role, type : _type }
+			data : {role : _id_role, type : _type }
 		}).done(function(_response) {
 			location.reload();
 		});

@@ -13,7 +13,6 @@ class Menu extends Model
     protected $table = 'adm_menus';
 
     protected $fillable = [
-    	'id_sistema',
     	'padre',
     	'nombre_menu',
     	'ruta',

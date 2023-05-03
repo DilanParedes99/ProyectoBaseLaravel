@@ -13,7 +13,6 @@ class SistemaGrupo extends Model
 
     protected $fillable = [
     	'id_grupo',
-    	'id_sistema'
     ];
 
     protected $hidden = [

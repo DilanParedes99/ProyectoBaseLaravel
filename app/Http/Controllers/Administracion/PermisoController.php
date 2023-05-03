@@ -28,20 +28,18 @@ class PermisoController extends Controller
 		$menus_asignados = [];
 		foreach($menus as $menu)
 			$menus_asignados[] = $menu->id_menu;
-		$sistemas_asignados = [];
-		foreach($sistemas as $sistema)
-			$sistemas_asignados[] = $sistema->id_sistema;
+
         $sistemas_all = [];
         $sistemas_full = Sistema::all();
         foreach($sistemas_full as $sistema) {
-            $funciones_sistema = DB::select('SELECT COUNT(id) AS total FROM adm_rel_funciones_grupos WHERE id_grupo = ? AND id_funcion IN (SELECT id FROM adm_funciones WHERE id_sistema = ?)', [$grupo->id, $sistema->id])[0];
-            $menus_sistema = DB::select('SELECT COUNT(id) AS total FROM adm_rel_menu_grupo WHERE id_grupo = ? AND id_menu IN (SELECT id FROM adm_menus WHERE id_sistema = ?)', [$grupo->id, $sistema->id])[0];
-            $funciones = Funciones::where('id_sistema', $sistema->id)->get();
-            $menus = Menu::where('id_sistema', $sistema->id)->get();
+            $funciones_sistema = DB::select('SELECT COUNT(id) AS total FROM adm_rel_funciones_grupos WHERE id_grupo = ? AND id_funcion IN (SELECT id FROM adm_funciones)', [$grupo->id])[0];
+            $menus_sistema = DB::select('SELECT COUNT(id) AS total FROM adm_rel_menu_grupo WHERE id_grupo = ? AND id_menu IN (SELECT id FROM adm_menus)', [$grupo->id])[0];
+            $funciones = Funciones::get();
+            $menus = Menu::get();
             if(($funciones_sistema->total == count($funciones)) && ($menus_sistema->total == count($menus)))
                 $sistemas_all[] = $sistema->id;
         }
-		$data = ["grupo" => $grupo, "asignados" => $asignados, "menus" => $menus_asignados, "sistemas" => $sistemas_asignados, "sistema-all" => $sistemas_all];
+		$data = ["grupo" => $grupo, "asignados" => $asignados, "menus" => $menus_asignados,  "sistema-all" => $sistemas_all];
         //dd($data);
 		return view('administracion.permisos.index', compact('data'));
     }
@@ -78,26 +76,25 @@ class PermisoController extends Controller
         Controller::check_permission('postPermisos', false);
     	$sistema = new SistemaGrupo();
     	$sistema->id_grupo = $request->role;
-    	$sistema->id_sistema = $request->sistema;
     	$sistema->save();
     	return "true";
     }
     //DesAsigna Rol a Sistema
     public function postSremueve(Request $request) {
         Controller::check_permission('deletePermisos', false);
-    	SistemaGrupo::where('id_grupo', '=', $request->role)->where('id_sistema', '=', $request->sistema)->delete();
+    	SistemaGrupo::where('id_grupo', '=', $request->role)->delete();
     }
     //Asigna Todos los Permisos a Grupo
     public function postAllPermission(Request $request) {
         if($request->type == "add") {
-            $menus = Menu::where('id_sistema', $request->sistema)->get();
+            $menus = Menu::get();
             foreach($menus as $menu) {
                 $permiso = new MenuGrupo();
                 $permiso->id_grupo = $request->role;
                 $permiso->id_menu = $menu->id;
                 $permiso->save();
             }
-            $funciones = Funciones::where('id_sistema', $request->sistema)->get();
+            $funciones = Funciones::get();
             foreach($funciones as $funcion) {
                 $permiso = new Permisos();
                 $permiso->id_grupo = $request->role;
@@ -106,15 +103,14 @@ class PermisoController extends Controller
             }
             $permiso = new SistemaGrupo();
             $permiso->id_grupo = $request->role;
-            $permiso->id_sistema = $request->sistema;
             $permiso->save();
         } else {
-            SistemaGrupo::where('id_grupo', $request->role)->where('id_sistema', $request->sistema)->delete();
-            $menus = Menu::where('id_sistema', $request->sistema)->get();
+            SistemaGrupo::where('id_grupo', $request->role)->delete();
+            $menus = Menu::get();
             foreach($menus as $menu) {
                 MenuGrupo::where('id_grupo', $request->role)->where('id_menu', $menu->id)->delete();
             }
-            $funciones = Funciones::where('id_sistema', $request->sistema)->get();
+            $funciones = Funciones::get();
             foreach($funciones as $funcion) {
                 Permisos::where('id_grupo', $request->role)->where('id_funcion', $funcion->id)->delete();
             }

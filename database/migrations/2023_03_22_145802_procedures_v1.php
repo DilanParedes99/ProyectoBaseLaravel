@@ -19,7 +19,6 @@ return new class extends Migration
             FROM adm_rel_funciones_grupos p
             INNER JOIN adm_funciones f ON f.id = p.id_funcion
             WHERE f.funcion = in_funcion
-            AND f.id_sistema = in_sistema
             AND p.id_grupo IN (SELECT u.id_grupo FROM adm_rel_user_grupo u WHERE u.id_usuario = in_usuario);
         END");
 

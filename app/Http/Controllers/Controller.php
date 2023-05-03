@@ -21,11 +21,11 @@ class Controller extends BaseController
     	if(Auth::user()->sudo == 1)
     		$permiso = true;
     	else
-    		$permiso = DB::select('CALL sp_check_permission(?, ?, ?)', [Auth::user()->id, $module, Session::get('sistema')]);
+    		$permiso = DB::select('CALL sp_check_permission(?, ?)', [Auth::user()->id, $module]);
     	if($permiso) {
             if($bt) {
                 $ip = Request::getClientIp();
-                $estructura = DB::select('SELECT modulo, tipo FROM adm_funciones WHERE funcion=? AND id_sistema = ?', [$module, Session::get('sistema')]);
+                $estructura = DB::select('SELECT modulo, tipo FROM adm_funciones  ' );
                 if(count($estructura) > 0){
                     $estructura = $estructura[0];
                     $fecha_movimiento = \Carbon\Carbon::now()->toDateTimeString();

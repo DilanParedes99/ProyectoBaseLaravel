@@ -93,9 +93,9 @@
                 <div id="logout" class="btn-header transparent pull-right">
                     <span> <a href="/logout" title="Cerrar Sesion" data-action="userLogout" data-logout-msg="Recuerde siempre cerrar la sesion de su cuenta para evitar accesos indebidos."><i class="fa fa-sign-out"></i></a></span>
                 </div>
-                <div id="user" class="btn-header transparent pull-right">
+                <!--<div id="user" class="btn-header transparent pull-right">
                     <span> <a title="Perfil"><i class="fa fa-user"></i></a> </span>
-                </div>
+                </div>-->
                 <div id="fullscreen" class="btn-header transparent pull-right">
                     <span> <a href="javascript:void(0);" data-action="launchFullscreen" title="Pantalla Completa"><i class="fa fa-arrows-alt"></i></a> </span>
                 </div>

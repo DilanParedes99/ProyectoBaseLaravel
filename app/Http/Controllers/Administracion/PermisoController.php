@@ -21,7 +21,6 @@ class PermisoController extends Controller
     	$grupo = Grupo::find($id);
 		$permisos = Permisos::where('id_grupo', '=', $grupo->id)->get();
 		$menus = MenuGrupo::where('id_grupo', '=', $grupo->id)->get();
-		$sistemas = SistemaGrupo::where('id_grupo', '=', $grupo->id)->get();
 		$asignados = [];
 		foreach($permisos as $permiso)
 			$asignados[] = $permiso->id_funcion;
@@ -29,17 +28,11 @@ class PermisoController extends Controller
 		foreach($menus as $menu)
 			$menus_asignados[] = $menu->id_menu;
 
-        $sistemas_all = [];
-        $sistemas_full = Sistema::all();
-        foreach($sistemas_full as $sistema) {
-            $funciones_sistema = DB::select('SELECT COUNT(id) AS total FROM adm_rel_funciones_grupos WHERE id_grupo = ? AND id_funcion IN (SELECT id FROM adm_funciones)', [$grupo->id])[0];
-            $menus_sistema = DB::select('SELECT COUNT(id) AS total FROM adm_rel_menu_grupo WHERE id_grupo = ? AND id_menu IN (SELECT id FROM adm_menus)', [$grupo->id])[0];
-            $funciones = Funciones::get();
-            $menus = Menu::get();
-            if(($funciones_sistema->total == count($funciones)) && ($menus_sistema->total == count($menus)))
-                $sistemas_all[] = $sistema->id;
-        }
-		$data = ["grupo" => $grupo, "asignados" => $asignados, "menus" => $menus_asignados,  "sistema-all" => $sistemas_all];
+        $funciones_sistema = DB::select('SELECT COUNT(id) AS total FROM adm_rel_funciones_grupos WHERE id_grupo = ? AND id_funcion IN (SELECT id FROM adm_funciones)', [$grupo->id])[0];
+        $menus_sistema = DB::select('SELECT COUNT(id) AS total FROM adm_rel_menu_grupo WHERE id_grupo = ? AND id_menu IN (SELECT id FROM adm_menus)', [$grupo->id])[0];
+        $funciones = Funciones::get();
+        $menus = Menu::get();
+		$data = ["grupo" => $grupo, "asignados" => $asignados, "menus" => $menus_asignados];
         //dd($data);
 		return view('administracion.permisos.index', compact('data'));
     }

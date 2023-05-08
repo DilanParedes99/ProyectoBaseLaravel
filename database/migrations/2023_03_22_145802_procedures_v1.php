@@ -22,7 +22,7 @@ return new class extends Migration
             AND p.id_grupo IN (SELECT u.id_grupo FROM adm_rel_user_grupo u WHERE u.id_usuario = in_usuario);
         END");
 
-        DB::unprepared("CREATE PROCEDURE sp_menu_sidebar(in_usuario INT, in_sistema INT, in_padre INT)
+        DB::unprepared("CREATE PROCEDURE sp_menu_sidebar(in_usuario INT, in_padre INT)
         BEGIN
             SELECT
             m.id,

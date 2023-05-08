@@ -26,14 +26,14 @@ Sistema de Expedientes Digitales Jurídicos
                     <span class="menu-item-parent">Inicio</span>
                 </a>
             </li>
-            <?php $menus = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id, Session::get('sistema'), null]); ?>
+            <?php $menus = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, null]); ?>
             @foreach($menus as $menu)
             <li>
                 <a href="{{$menu->ruta}}">
                     <i class="fa fa-lg fa-fw {{$menu->icono}}"></i>
                     <span class="menu-item-parent">{{$menu->nombre_menu}}</span>
                 </a>
-                <?php $hijos = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id, Session::get('sistema'), $menu->id]); ?>
+                <?php $hijos = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, $menu->id]); ?>
                 @if($hijos)
                     <ul>
                     @foreach($hijos as $hijo)
@@ -42,7 +42,7 @@ Sistema de Expedientes Digitales Jurídicos
                             <i class="fa fa-lg fa-fw {{$hijo->icono}}"></i>
                             <span class="menu-item-parent">{{$hijo->nombre_menu}}</span>
                         </a>
-                        <?php $nietos = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id, Session::get('sistema'), $hijo->id]); ?>
+                        <?php $nietos = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, $hijo->id]); ?>
                         @if($nietos)
                             <ul>
                             @foreach($nietos as $nieto)

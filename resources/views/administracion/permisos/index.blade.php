@@ -21,79 +21,73 @@
 											<div class="form-group">
 												<div class="tree smart-form" id="modules-tree">
 													<ul>
-														<?php $sistemas = DB::select('SELECT id, nombre_sistema as nombre FROM adm_sistemas WHERE estatus=1'); ?>
-														@foreach($sistemas as $sistema)
-														<li>
-															<span>
-																<i class="fa fa-lg fa-plus-circle"></i>&nbsp;
-																{{$sistema->nombre}}
-																<span class="ch">
-																	@if(in_array($sistema->id, $data['sistemas']))
-																	<input type="checkbox" name="sistemas" value="{{$sistema->id}}" checked>
-																	@else
-																	<input type="checkbox" name="sistemas" value="{{$sistema->id}}">
-																	@endif
-																</span>
-
-																<br>
-																
-																Asignar/Desasignar todos los permisos
-																<span class="ch-all">
-																	@if(in_array($sistema->id, $data['sistema-all']))
-																	<input type="checkbox" name="all-permission" value="{{ $sistema->id }}" checked>
-																	@else
-																	<input type="checkbox" name="all-permission" value="{{ $sistema->id }}">
-																	@endif
-																</span>
-															</span>
-															<ul>
-																<?php $menus = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id, null]); ?>
-																@foreach($menus as $menu)
-																<li style="display:none">									
-																	<span>																
-																		<i class="fa fa-lg {{$menu->icono}}"></i>&nbsp;
-																		{{$menu->nombre_menu}}
-																		<span class="ch">
-																			@if(in_array($menu->id, $data['menus']))
-																			<input type="checkbox" name="menus" value="{{$menu->id}}" checked>
-																			@else
-																			<input type="checkbox" name="menus" value="{{$menu->id}}">
-																			@endif
-																		</span>
+														<ul>
+															<?php $menus = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, null]); ?>
+															@foreach($menus as $menu)
+															<li>									
+																<span>																
+																	<i class="fa fa-lg {{$menu->icono}}"></i>&nbsp;
+																	{{$menu->nombre_menu}}
+																	<span class="ch">
+																		@if(in_array($menu->id, $data['menus']))
+																		<input type="checkbox" name="menus" value="{{$menu->id}}" checked>
+																		@else
+																		<input type="checkbox" name="menus" value="{{$menu->id}}">
+																		@endif
 																	</span>
-																	<ul>
-																		<?php $hijos = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id, $menu->id]); ?>
-																		@foreach($hijos as $hijo)
-																		<li style="display: none">
-																			<span>
-																				<i class="fa fa-lg fa-plus-circle"></i>&nbsp;
-																				{{$hijo->nombre_menu}}
-																				<span class="ch">
-																					@if(in_array($hijo->id, $data['menus']))
-																					<input type="checkbox" name="menus" value="{{$hijo->id}}" checked>
-																					@else
-																					<input type="checkbox" name="menus" value="{{$hijo->id}}">
-																					@endif
-																				</span>
+																</span>
+																<ul>
+																	<?php $hijos = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id, $menu->id]); ?>
+																	@foreach($hijos as $hijo)
+																	<li style="display: none">
+																		<span>
+																			<i class="fa fa-lg fa-plus-circle"></i>&nbsp;
+																			{{$hijo->nombre_menu}}
+																			<span class="ch">
+																				@if(in_array($hijo->id, $data['menus']))
+																				<input type="checkbox" name="menus" value="{{$hijo->id}}" checked>
+																				@else
+																				<input type="checkbox" name="menus" value="{{$hijo->id}}">
+																				@endif
 																			</span>
-																			<?php $nietos = DB::select('CALL sp_menu_sidebar(?, ?, ?)', [Auth::user()->id,$hijo->id]); ?>
-																			@if($nietos)
-																				<ul>
-																				@foreach($nietos as $nieto)
-																					<li style="display: none">
-																						<span>
-																							<i class="fa fa-lg fa-plus-circle"></i>&nbsp;
-																							{{$nieto->nombre_menu}}
-																							<span class="ch">
-																								@if(in_array($nieto->id, $data['menus']))
-																								<input type="checkbox" name="menus" value="{{$nieto->id}}" checked>
-																								@else
-																								<input type="checkbox" name="menus" value="{{$nieto->id}}">
-																								@endif
-																							</span>
+																		</span>
+																		<?php $nietos = DB::select('CALL sp_menu_sidebar(?, ?)', [Auth::user()->id,$hijo->id]); ?>
+																		@if($nietos)
+																			<ul>
+																			@foreach($nietos as $nieto)
+																				<li style="display: none">
+																					<span>
+																						<i class="fa fa-lg fa-plus-circle"></i>&nbsp;
+																						{{$nieto->nombre_menu}}
+																						<span class="ch">
+																							@if(in_array($nieto->id, $data['menus']))
+																							<input type="checkbox" name="menus" value="{{$nieto->id}}" checked>
+																							@else
+																							<input type="checkbox" name="menus" value="{{$nieto->id}}">
+																							@endif
 																						</span>
+																					</span>
+																					<ul>
+																						<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ', [$nieto->nombre]); ?>
+																						@foreach($permisos as $permiso)
+																						<li style="display:none">
+																							<span>
+																								<label class="checkbox inline-block">
+																									@if(in_array($permiso->id, $data['asignados']))
+																									<input type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
+																									@else
+																									<input type="checkbox" name="permisos" value="{{$permiso->id}}">
+																									@endif
+																									<i></i> {{$permiso->tipo}}
+																								</label>
+																							</span>
+																						</li>
+																						@endforeach
+																						<?php $modulos = DB::select('SELECT DISTINCT modulo FROM adm_funciones WHERE padre=? ORDER BY modulo', [$nieto->nombre]); ?>
+																						@foreach($modulos as $modulo)
+																						<li style="display: none"><span><i class="fa fa-lg fa-plus-circle"></i>&nbsp; {{$modulo->modulo}}</span>
 																						<ul>
-																							<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ', [$nieto->nombre]); ?>
+																							<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$modulo->modulo]); ?>
 																							@foreach($permisos as $permiso)
 																							<li style="display:none">
 																								<span>
@@ -108,92 +102,48 @@
 																								</span>
 																							</li>
 																							@endforeach
-																							<?php $modulos = DB::select('SELECT DISTINCT modulo FROM adm_funciones WHERE padre=? ORDER BY modulo', [$nieto->nombre]); ?>
-																							@foreach($modulos as $modulo)
-																							<li style="display: none"><span><i class="fa fa-lg fa-plus-circle"></i>&nbsp; {{$modulo->modulo}}</span>
-																							<ul>
-																								<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$modulo->modulo]); ?>
-																								@foreach($permisos as $permiso)
-																								<li style="display:none">
-																									<span>
-																										<label class="checkbox inline-block">
-																											@if(in_array($permiso->id, $data['asignados']))
-																											<input type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
-																											@else
-																											<input type="checkbox" name="permisos" value="{{$permiso->id}}">
-																											@endif
-																											<i></i> {{$permiso->tipo}}
-																										</label>
-																									</span>
-																								</li>
-																								@endforeach
-																							</ul></li>
-																							@endforeach
-																						</ul>
-																					</li>
-																				@endforeach
-																				</ul>
-																			@else
-																				@if($hijo->nombre_menu == "Reportes" || $hijo->nombre_menu == "Reportes Oficiales")
-																					<?php $permisos = DB::select('SELECT id, modulo FROM adm_funciones WHERE padre=?', [$hijo->nombre]); ?>
-																					<ul>
-																						@foreach($permisos as $permiso)
-																						<li style="display: none">
-																							<span>
-																								<label class="checkbox inline-block">
-																									@if(in_array($permiso->id, $data['asignados']))
-																									<input type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
-																									@else
-																									<input type="checkbox" name="permisos" value="{{$permiso->id}}">
-																									@endif
-																									<i></i>&nbsp; {{$permiso->modulo}}
-																								</label>
-																							</span>
-																						</li>
+																						</ul></li>
 																						@endforeach
 																					</ul>
-																				
-																					</ul>
-																				@else
-																				<ul>
-																					<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$hijo->nombre_menu]); ?>
-																					@foreach($permisos as $permiso)
-																					<li style="display:none">
-																						<span>
-																							<label class="checkbox inline-block">
-																								@if(in_array($permiso->id, $data['asignados']))
-																								<input type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
-																								@else
-																								<input type="checkbox" name="permisos" value="{{$permiso->id}}">
-																								@endif
-																								<i></i>&nbsp; {{$permiso->tipo}}
-																							</label>
-																						</span>
-																					</li>
-																					@endforeach
-																				</ul>
-																				@endif
+																				</li>
+																			@endforeach
+																			</ul>
+																		@else
+																			<ul>
+																				<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$hijo->nombre_menu]); ?>
+																				@foreach($permisos as $permiso)
+																				<li style="display:none">
+																					<span>
+																						<label class="checkbox inline-block">
+																							@if(in_array($permiso->id, $data['asignados']))
+																							<input type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
+																							@else
+																							<input type="checkbox" name="permisos" value="{{$permiso->id}}">
+																							@endif
+																							<i></i>&nbsp; {{$permiso->tipo}}
+																						</label>
+																					</span>
+																				</li>
+																				@endforeach
+																			</ul>
+																		@endif
+																	</li>																
+																	@endforeach
+																</ul>
+															<ul>
+																<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$menu->nombre_menu]); ?>
+																@foreach($permisos as $permiso)
+																<li style="display:none">
+																	<span>
+																		<label class="checkbox inline-block">
+																			@if(in_array($permiso->id, $data['asignados']))
+																			<input type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
+																			@else
+																			<input type="checkbox" name="permisos" value="{{$permiso->id}}">
 																			@endif
-																		</li>																
-																		@endforeach
-																	</ul>
-																	<ul>
-																		<?php $permisos = DB::select('SELECT id, tipo FROM adm_funciones WHERE modulo=? ORDER BY tipo', [$menu->nombre_menu]); ?>
-																		@foreach($permisos as $permiso)
-																		<li style="display:none">
-																			<span>
-																				<label class="checkbox inline-block">
-																					@if(in_array($permiso->id, $data['asignados']))
-																					<input type="checkbox" name="permisos" value="{{$permiso->id}}" checked>
-																					@else
-																					<input type="checkbox" name="permisos" value="{{$permiso->id}}">
-																					@endif
-																					<i></i>&nbsp; {{$permiso->tipo}}
-																				</label>
-																			</span>
-																		</li>
-																		@endforeach
-																	</ul>
+																			<i></i>&nbsp; {{$permiso->tipo}}
+																		</label>
+																	</span>
 																</li>
 																@endforeach
 															</ul>

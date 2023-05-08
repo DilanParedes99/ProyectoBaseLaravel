@@ -1,7 +1,7 @@
 # ProyectoBaseLaravel
 Este es un pryecto base 
 
-##Inicio: 
+## Inicio: 
 ```
 1.-composer update
 2.-php artisan cache:clear

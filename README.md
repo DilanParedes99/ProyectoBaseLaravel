@@ -1,5 +1,5 @@
 # ProyectoBaseLaravel
-Este es un pryecto base 
+Este es un pryecto base.
 
 ## Inicio: 
 ```
@@ -9,3 +9,4 @@ Este es un pryecto base
 4.-php artisan key:generate
 5.-.\runDev.bat
 ```
+La rama main contiene todo el proyecto
